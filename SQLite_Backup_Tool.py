@@ -30,11 +30,24 @@ def decrypt_data(ciphertext, nonce, tag, key):
 
 # Function to upload file to Google Drive
 def upload_file_to_drive(filepath, filename):
-    print(f"Uploading file {filename} to Google Drive folder {filepath}")
+    print(f"Encrypting and uploading file {filename} to Google Drive folder {filepath}")
+    
+    # Read the file
+    with open(filepath, 'rb') as file:
+        data = file.read()
+
+    # Encrypt the data
+    ciphertext, nonce, tag, key = encrypt_data(data)
+
+    # Write the encrypted data to a new file
+    encrypted_filepath = filepath + '.enc'
+    with open(encrypted_filepath, 'wb') as file:
+        file.write(ciphertext)
+
     creds = Credentials.from_authorized_user_file('token_new.json', scopes= ['https://www.googleapis.com/auth/drive.file'])
     service = build('drive', 'v3', credentials=creds)
     file_metadata = {'name': filename}
-    media = MediaFileUpload(filepath, mimetype='application/octet-stream')
+    media = MediaFileUpload(encrypted_filepath, mimetype='application/octet-stream')
     file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     print(f"File ID: {file.get('id')} - File uploaded successfully")
 
