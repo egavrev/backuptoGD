@@ -36,7 +36,7 @@ cd SQLite_Backup_Tool
 ```shell
 python SQLite_Backup_Tool.py
 ```
-### TO DO list
-[ ] use secret for encryption
-[ ] create function to decrypt file 
-[ ] create crontab file to use it on cron
+#### TO DO list
+- [ ] use secret for encryption
+- [ ] create function to decrypt file 
+- [ ] create crontab file to use it on cron
