@@ -79,11 +79,14 @@ def main():    # Main execution flow
     parser.add_argument('--file', help='SQLite file to backup or restore. Full path to file must be provided.')
     parser.add_argument('--folder', help='Google Drive folder for backup or restore.')
     parser.add_argument('--credentials', help='OAuth credentials for Google Drive access in JSON format.')
+    parser.add_argument('--refresh_token', help='Refresh token for Google Drive access.')
     parser.add_argument('--mode', choices=['backup', 'restore'], help='Select operation mode: backup for uploading and encrypting file to Google Drive, restore for downloading and decrypting file from Google Drive.')
     args = parser.parse_args()
     if args.mode.lower() == 'backup':
         upload_file_to_drive(args.file, args.folder)
     elif args.mode.lower() == 'restore':
+        download_and_decrypt_file(args.file, args.folder, args.credentials)
+    elif args.mode.lower() == 'refresh_token':
         download_and_decrypt_file(args.file, args.folder, args.credentials)
 
 
