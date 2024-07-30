@@ -37,8 +37,8 @@ cd SQLite_Backup_Tool
 python SQLite_Backup_Tool.py 
 ```
 #### TO DO list
-- [ ] use secret for encryption
-- [ ] add refresh tocken option for refresh_token updates to generate new token file.
+- [X] use secret for encryption
+- [X] add refresh tocken option for refresh_token updates to generate new token file.
 - [ ] create function to decrypt file 
 - [ ] add to Readme.md details on how do you obtain token file.
 - [ ] refactor to clean code
