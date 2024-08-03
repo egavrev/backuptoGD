@@ -32,7 +32,7 @@ def encrypt_data(data, password):
     cipher = AES.new(key, AES.MODE_EAX)
     nonce = cipher.nonce
     ciphertext, tag = cipher.encrypt_and_digest(data)
-    return ciphertext
+    return salt, nonce, tag, ciphertext
 
 
 # Decryption Function
@@ -40,15 +40,11 @@ def decrypt_data(ciphertext, nonce, tag, password, salt):
     # Derive the key from the password and salt
     key = derive_key(password, salt)
     
-    # Debug prints to check the values
-    print(f"Ciphertext: {base64.b64encode(ciphertext).decode()}")
-    print(f"Nonce: {base64.b64encode(nonce).decode()}")
-    print(f"Tag: {base64.b64encode(tag).decode()}")
-    print(f"AES Key: {base64.b64encode(key).decode()}")
 
     cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
     try:
         data = cipher.decrypt_and_verify(ciphertext, tag)
+        print (f"Decrypted Data: {data}")
         return data
     except ValueError as e:
         print("Decryption failed: ", e)
@@ -63,12 +59,17 @@ def upload_file_to_drive(local_file, gd_file, aes_key):
         data = file.read()
 
     # Encrypt the data
-    ciphertext = encrypt_data(data, aes_key)
+    salt, nonce, tag, ciphertext = encrypt_data(data, aes_key)
 
     # Write the encrypted data to a new file
     encrypted_filepath = local_file + '.enc'
     with open(encrypted_filepath, 'wb') as file:
+        file.write(salt)
+        file.write(nonce)
         file.write(ciphertext)
+        file.write(tag)
+
+        
 
     creds = Credentials.from_authorized_user_file('token.json', scopes= ['https://www.googleapis.com/auth/drive.file'])
     service = build('drive', 'v3', credentials=creds)
@@ -110,12 +111,7 @@ def download_and_decrypt_file(local_file, gd_file, aes_key):
         ciphertext = data[32:-16]
         tag = data[-16:]
         # Debug prints to verify extracted values
-        print(f"Extracted Salt: {base64.b64encode(salt).decode()}")
-        print(f"Extracted Nonce: {base64.b64encode(nonce).decode()}")
         print(f"Extracted Ciphertext: {base64.b64encode(ciphertext).decode()}")
-        print(f"Extracted Tag: {base64.b64encode(tag).decode()}")
-
-        
         # Decrypt the data
         decrypted_data = decrypt_data(ciphertext, nonce, tag, aes_key, salt)
 

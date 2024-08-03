@@ -39,7 +39,8 @@ python SQLite_Backup_Tool.py
 #### TO DO list
 - [X] use secret for encryption
 - [X] add refresh tocken option for refresh_token updates to generate new token file.
-- [ ] create function to decrypt file 
+- [X] create function to decrypt file 
 - [ ] add to Readme.md details on how do you obtain token file.
+- [ ] bug issues with % char at end of decrypted file
 - [ ] refactor to clean code
 - [ ] create crontab file to use it on cron
